@@ -45,15 +45,17 @@ export class Dialog<T> {
   /**
    * @constructor
    *
-   * @param url Url to be opened in the dialog.
+   * @param url Url to be opened in the dialog or redirected to is redirecterUrl is not empty
    * @param width Width of the dialog.
    * @param height Height of the dialog.
+   * @param redirecterUrl Url of local redirecter
   */
   constructor(
     public url: string = location.origin,
     width: number = 1024,
     height: number = 768,
-    public useTeamsDialog: boolean = false
+    public useTeamsDialog: boolean = false,
+    public redirecterUrl: string = ""
   ) {
     if (!(/^https/.test(url))) {
       throw new DialogError('URL has to be loaded over HTTPS.');
@@ -84,13 +86,16 @@ export class Dialog<T> {
   size: IDialogSize;
 
   private _addinDialog<T>(): Promise<T> {
+    var url = this.redirecterUrl == "" ? this.url : this.redirecterUrl + "?redirect=" + encodeURIComponent(this.url);
+
     return new Promise((resolve, reject) => {
-      Office.context.ui.displayDialogAsync(this.url, { width: this.size.width$, height: this.size.height$ }, (result: Office.AsyncResult) => {
+      Office.context.ui.displayDialogAsync(url, { width: this.size.width$, height: this.size.height$ }, (result: Office.AsyncResult) => {
         if (result.status === Office.AsyncResultStatus.Failed) {
           reject(new DialogError(result.error.message, result.error));
         }
         else {
           let dialog = result.value as Office.DialogHandler;
+
           dialog.addEventHandler(Office.EventType.DialogMessageReceived, args => {
             let result = this._safeParse(args.message) as T;
             resolve(result);
