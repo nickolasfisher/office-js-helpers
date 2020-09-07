@@ -58,7 +58,8 @@ export class Authenticator {
   authenticate(
     provider: string,
     force: boolean = false,
-    useMicrosoftTeams: boolean = false
+    useMicrosoftTeams: boolean = false,
+    redirecterUrl: string = ""
   ): Promise<IToken> {
     let token = this.tokens.get(provider);
     let hasTokenExpired = TokenStorage.hasExpired(token);
@@ -67,7 +68,7 @@ export class Authenticator {
       return Promise.resolve(token);
     }
 
-    return this._openAuthDialog(provider, useMicrosoftTeams);
+    return this._openAuthDialog(provider, useMicrosoftTeams, redirecterUrl);
   }
 
   /**
@@ -136,7 +137,7 @@ export class Authenticator {
     return params;
   }
 
-  private async _openAuthDialog(provider: string, useMicrosoftTeams: boolean): Promise<IToken> {
+  private async _openAuthDialog(provider: string, useMicrosoftTeams: boolean, redirecterUrl: string): Promise<IToken> {
     // Get the endpoint configuration for the given provider and verify that it exists.
     let endpoint = this.endpoints.get(provider);
     if (endpoint == null) {
@@ -148,7 +149,8 @@ export class Authenticator {
 
     // Launch the dialog and perform the OAuth flow. We launch the dialog at the redirect
     // url where we expect the call to isAuthDialog to be available.
-    let redirectUrl = await new Dialog<string>(url, 1024, 768, useMicrosoftTeams).result;
+
+    let redirectUrl = await new Dialog<string>(url, 1024, 768, useMicrosoftTeams, redirecterUrl).result;
 
     // Try and extract the result and pass it along.
     return this._handleTokenResult(redirectUrl, endpoint, state);
@@ -229,6 +231,9 @@ export class Authenticator {
       return this._exchangeCodeForToken(endpoint, result as ICode);
     }
     else if ('access_token' in result) {
+      return this.tokens.add(endpoint.provider, result as IToken);
+    }
+    else if ('id_token' in result) {
       return this.tokens.add(endpoint.provider, result as IToken);
     }
     else {
