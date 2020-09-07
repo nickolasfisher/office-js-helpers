@@ -1,8 +1,10 @@
-# 09/07/2020
+> # 09/07/2020
 
 > Due to some critical bugs in this package that prevent it from working on all platforms I have forked this repository from the original Microsoft project and begun new maintenance here.  
 
 > Please feel free to use this package at your own risk.  You are welcomed to report issues against this project.  
+
+> Original readme from the microsoft library follows.
 
 > # ❗️ Deprecation Notice ❗️ [![No Maintenance Intended](badge.svg)](https://www.npmjs.com/package/@microsoft/office-js-helpers)
 >**Thank you** for all your efforts and contributions!
