@@ -1,3 +1,9 @@
+# 09/07/2020
+
+> Due to some critical bugs in this package that prevent it from working on all platforms I have forked this repository from the original Microsoft project and begun new maintenance here.  
+
+> Please feel free to use this package at your own risk.  You are welcomed to report issues against this project.  
+
 > # ❗️ Deprecation Notice ❗️ [![No Maintenance Intended](badge.svg)](https://www.npmjs.com/package/@microsoft/office-js-helpers)
 >**Thank you** for all your efforts and contributions!
 > ``` office-js-helpers ``` is a community-driven package of sample code that encapsulates a set of convenience functions. The package was initially developed as an example abstraction to common patterns found by developers.
