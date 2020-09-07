@@ -219,6 +219,8 @@ export class EndpointStorage extends Storage<IEndpointConfiguration> {
       `redirect_uri=${encodeURIComponent(endpointConfig.redirectUrl)}`
     ];
 
+    urlSegments.push('prompt=select_account');
+
     if (scope) {
       urlSegments.push(`scope=${scope}`);
     }
